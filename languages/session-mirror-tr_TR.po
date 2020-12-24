@@ -1,0 +1,98 @@
+msgid ""
+msgstr ""
+
+"PO-Revision-Date: 2020-01-01 12:00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: GlotPress/3.0.0-alpha.2\n"
+"Language: tr\n"
+"Project-Id-Version: Session Mirror Wordpress Plugin\n"
+
+msgid "Permission denied"
+msgstr "Yetki bulunmuyor"
+
+msgid "Browser"
+msgstr "Tarayıcı"
+
+msgid "OS"
+msgstr "İşletim Sistemi"
+
+msgid "Device"
+msgstr "Cihaz"
+
+msgid "Computer"
+msgstr "Bilgisayar"
+
+msgid "Mobile"
+msgstr "Mobil"
+
+msgid "Country"
+msgstr "Ülke"
+
+msgid "City"
+msgstr "Şehir"
+
+msgid "Tags"
+msgstr "Etiketler"
+
+msgid "Tag"
+msgstr "Etiket"
+
+msgid "Filter"
+msgstr "Filtrele"
+
+msgid "Watch"
+msgstr "İzle"
+
+msgid "Duration"
+msgstr "Süre"
+
+msgid "Browser / OS"
+msgstr "Tarayıcı / İşletim Sistemi"
+
+msgid "Location"
+msgstr "Konum"
+
+msgid "Pages"
+msgstr "Sayfalar"
+
+msgid "Date"
+msgstr "Tarih"
+
+msgid "If you do not have an account, you can register simply"
+msgstr "Hesabınız yoksa kolayca oluşturabilirsiniz"
+
+msgid "Create User"
+msgstr "Üye ol"
+
+msgid "You can create Api key and Secret key from the"
+msgstr "Api Key ve Secret Key'inizi almak için"
+
+msgid "Settings Page"
+msgstr "Ayarlar Sayfası"
+
+msgid "Site Domain"
+msgstr "Site Adresi"
+
+msgid "Site Status"
+msgstr "Site Durumu"
+
+msgid "Active"
+msgstr "Aktif"
+
+msgid "Passive"
+msgstr "Pasif"
+
+msgid "If you set as Passive, we can not recording video."
+msgstr "Pasif olarak ayarlarsanız video kayıt edilmez."
+
+msgid "Reset"
+msgstr "Sıfırla"
+
+msgid "Please set your Api key and Secret key from the %s settings page %s"
+msgstr "Lütfen Api Key ve Secret Key bilgilerinizi %s ayarlar sayfasından %s giriniz"
+
+msgid "Settings saved successfully"
+msgstr "Ayarlar başarıyla kaydedildi"
