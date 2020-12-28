@@ -11,30 +11,30 @@ class SessionMirrorApi
     private $form_filters_cache_expire_seconds = 600;
 
     private $api_url = 'https://x.sessionmirror.com';
+    private $GET = 'GET';
+    private $POST = 'POST';
 
     public function create_project($site)
     {
-        $response = $this->request(
+        return $this->request(
             '/v1/user/projects/create',
             array(
                 'name' => $site,
                 'type' => 'WORDPRESS',
                 'version' => get_bloginfo('version')),
             $this->defaultHeaders(),
-            'POST'
+            $this->POST
         );
-        return json_decode($response, true);
     }
 
     public function projects()
     {
-        $response = $this->request(
+        return $this->request(
             '/v1/user/projects/list',
             array("x" => 1),
             $this->defaultHeaders(),
-            'POST'
+            $this->POST
         );
-        return json_decode($response, true);
     }
 
     public function video_filters($projectId)
@@ -46,38 +46,37 @@ class SessionMirrorApi
                 '/v1/session/filters/' . $projectId,
                 array(),
                 $this->defaultHeaders(),
-                'GET'
+                $this->GET
             );
 
             set_transient($this->form_filters_cache_key, $response, $this->form_filters_cache_expire_seconds);
         }
 
-        return json_decode($response, true);
+        return $response;
     }
 
     public function videos($filters, $projectId)
     {
         $filters['projectId'] = $projectId;
-        $response = $this->request(
+        return $this->request(
             '/v1/session/list',
             $filters,
             $this->defaultHeaders(),
-            'POST'
+            $this->POST
         );
-        return json_decode($response, true);
     }
 
-    public function video_records($filters)
+    public function video_records($filters, $media_player_type)
     {
         $response = $this->request(
             '/v1/session/record/list',
             array("sessionId" => $filters['id']),
             $this->defaultHeaders(),
-            'POST'
+            $this->POST
         );
-        $json = json_decode($response, true);
-        $json['token'] = $this->token;
-        return $json;
+        $response['token'] = $this->token;
+        $response['media_player_type'] = $media_player_type;
+        return $response;
     }
 
     public function set_access_token($apiKey, $secret)
@@ -92,12 +91,11 @@ class SessionMirrorApi
         $response = $this->request(
             '/oauth/token?grant_type=client_credentials',
             array("x" => 1),
-            array("authorization: Basic " . $authorization),
-            'POST'
+            array("authorization" => "Basic " . $authorization),
+            $this->POST
         );
-        $json = json_decode($response);
-        if ($json && isset($json->access_token)) {
-            $this->token = $json->access_token;
+        if ($response && isset($response['access_token'])) {
+            $this->token = $response['access_token'];
             $this->set_cache();
             return true;
         }
@@ -106,24 +104,25 @@ class SessionMirrorApi
 
     private function request($path, $body, $headers = array(), $method = 'GET')
     {
-        $curl = curl_init();
+        $url = $this->api_url . $path;
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $this->api_url . $path,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_POSTFIELDS => json_encode($body),
-        ));
+        $args = array(
+            'body'        => json_encode($body),
+            'timeout'     => '30',
+            'redirection' => '0',
+            'headers'     => $headers,
+        );
 
-        $response = curl_exec($curl);
-        curl_close($curl);
+        if ($method === $this->GET) {
+            $response = wp_remote_get($url, $args);
+        } else {
+            $response = wp_remote_post($url, $args);
+        }
 
-        return $response;
+        if (is_wp_error($response)) {
+            return array('error' => $response->errors);
+        }
+        return json_decode($response['body'], true);
     }
 
     private function set_cache()
@@ -139,8 +138,8 @@ class SessionMirrorApi
     private function defaultHeaders()
     {
         return array(
-            'authorization: Bearer ' . $this->token,
-            "content-type: application/json",
+            'authorization' => 'Bearer ' . $this->token,
+            'content-type' => 'application/json',
         );
     }
 

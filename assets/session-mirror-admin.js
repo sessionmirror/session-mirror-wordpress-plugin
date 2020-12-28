@@ -25,6 +25,7 @@
         videoPlayerModalVideoCountSelector: '.session-mirror-video-player-modal-info-video-count',
         videoPlayerModalVideoCountInputSelector: 'input#session-mirror-video-player-modal-page-count',
         videoPlayerModalCurrentPageIndex: 0,
+        videoPlayerMediaTypeLinkSelector: 'a#session-mirror-media-player-link',
 
         countries: {
             "AF": "Afghanistan",
@@ -367,7 +368,7 @@
                     links += '<a style="cursor:pointer;" onclick="sessionMirrorVideoPlayerOpenModal(\'' + item.sessionId+ '\', ' +j+')">' + (j+1) + '. ' +  parseDomain(records[j].details.url) +'</a><br/>';
                 }
 
-                html += '<tr id="session-' + i + '" class="iedit author-self level-0 status-publish format-standard hentry">' +
+                html += '<tr id="session-' + item.sessionId + '" class="iedit author-self level-0 status-publish format-standard hentry">' +
                     '<td class="title column-title has-row-actions column-primary page-title">' +
                     '<a style="cursor: pointer;" onclick="sessionMirrorVideoPlayerOpenModal(\'' + item.sessionId + '\')"><i class="fa fa-play-circle" style="font-size:40px"></i></a>' +
                     '</td>' +
@@ -600,10 +601,10 @@
     };
 
     w.sessionMirrorVideoPlayerOpenModal = function (sessionId, videoIndex) {
-        $(SM.videoPlayerContainerSelector).fadeIn();
         $(SM.videoPlayerModalSessionIdInputSelector).val(sessionId);
         var videoContent = $(SM.videoPlayerContentSelector);
         videoContent.html('Loading ...');
+        $("tr#session-" + sessionId).find('i.fa-play-circle').prop('class', 'fa fa-pulse fa-spinner');
 
         var data = {
             'action': SM.ajaxAction,
@@ -615,6 +616,7 @@
             var pages = res.response.records;
             var token = res.token;
             var currentPage = null;
+            var mediaPlayerType = res.media_player_type;
 
             if (!videoIndex) {
                 SM.videoPlayerModalCurrentPageIndex = 0;
@@ -636,9 +638,22 @@
             );
 
             var url = 'https://dashboard.sessionmirror.com/direct/' + sessionId + '/play/' + currentPage.pageId +'?token=' + token;
-            videoContent.html(
-                '<iframe scrolling="no" class="session-mirror-video-player-iframe" src="' + url + '"></iframe>'
-            );
+
+            $("tr#session-" + sessionId).find('i.fa-spinner').prop('class', 'fa fa-play-circle');
+
+            switch (mediaPlayerType) {
+                case 'IFRAME': {
+                    $(SM.videoPlayerContainerSelector).fadeIn();
+                    videoContent.html(
+                        '<iframe scrolling="no" class="session-mirror-video-player-iframe" src="' + url + '"></iframe>'
+                    );
+                } break;
+                case 'LINK': {
+                    var a = $(SM.videoPlayerMediaTypeLinkSelector);
+                    a.attr('href', url);
+                    a[0].click();
+                } break;
+            }
 
         });
     };

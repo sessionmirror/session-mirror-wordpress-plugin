@@ -116,10 +116,11 @@ class SessionMirror
 
     public function save_settings()
     {
-        $api_key = _sanitize_text_fields($_POST['session_mirror_api_key']);
-        $secret = _sanitize_text_fields($_POST['session_mirror_secret']);
-        $site = _sanitize_text_fields($_POST['session_mirror_site']);
-        $status = _sanitize_text_fields($_POST['session_mirror_site_status']);
+        $api_key = sanitize_text_field($_POST['session_mirror_api_key']);
+        $secret = sanitize_text_field($_POST['session_mirror_secret']);
+        $site = sanitize_text_field($_POST['session_mirror_site']);
+        $status = sanitize_text_field($_POST['session_mirror_site_status']);
+        $media_player_type = sanitize_text_field($_POST['session_mirror_media_player_type']);
 
         delete_option($this->option_key);
 
@@ -170,6 +171,7 @@ class SessionMirror
             'project_id' => $project_found['id'],
             'domain' => $site,
             'status' => $status,
+            'media_player_type' => $media_player_type,
         );
 
         add_option($this->option_key, $data);
@@ -178,13 +180,17 @@ class SessionMirror
 
     public function ajax()
     {
-        $function = _sanitize_text_fields($_POST['function']);
+        $function = sanitize_text_field($_POST['function']);
+
         $data = isset($_POST['data']) ? $_POST['data'] : array();
+        foreach ($data as $key => $value) {
+            $data[$key] = sanitize_text_field($value);
+        }
+
         $options = get_option($this->option_key);
         $project_id = isset($options['project_id']) ? $options['project_id'] : null;
 
         $access_token = $this->api->set_access_token($options['api_key'], $options['secret']);
-
         if (!$access_token) {
             die(json_encode(array('error' => 'Access token error')));
         }
@@ -197,7 +203,7 @@ class SessionMirror
             case 'videos':
                 die(json_encode($this->api->videos($data, $project_id)));
             case 'video_records':
-                die(json_encode($this->api->video_records($data)));
+                die(json_encode($this->api->video_records($data, $options['media_player_type'])));
         }
 
     }

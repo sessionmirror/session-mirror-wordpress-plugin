@@ -96,3 +96,12 @@ msgstr "Lütfen Api Key ve Secret Key bilgilerinizi %s ayarlar sayfasından %s g
 
 msgid "Settings saved successfully"
 msgstr "Ayarlar başarıyla kaydedildi"
+
+msgid "Media Player Type"
+msgstr "Video oynatıcı tipi"
+
+msgid "Iframe: Videos'll play on your wordpress dashboard"
+msgstr "Iframe: Videolar wordpress yönetim panelinizde oynatılır"
+
+msgid "Link: Videos'll play on dashboard.sessionmirror.com"
+msgstr "Link: Videolar dashboard.sessionmirror.com üzerinde oynatılır"

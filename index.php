@@ -7,7 +7,7 @@
 
 /*
 Plugin Name: Session Mirror
-Plugin URI: http://wordpress.org/plugins/session-mirror-wordpress-plugin/
+Plugin URI: http://wordpress.org/plugins/session-mirror
 Description: Session Mirror wordpress plugin.
 Author: Session Mirror
 Version: 1.0.0

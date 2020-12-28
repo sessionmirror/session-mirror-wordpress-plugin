@@ -21,7 +21,7 @@ Follow these steps to use the plugin:
 1. Activate the plugin through the 'Plugins' menu in WordPress
 2. If you don't have an account, create a free account then get api key and secret key from the session mirror dashboard (https://dashboard.sessionmirror.com/user/settings).
 3. Navigate back to your Wordpress admin panel > Session Mirror.
-4. Configure your wordpress.
+4. Configure your plugin.
 
 == Changelog ==
 

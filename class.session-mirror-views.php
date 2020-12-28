@@ -102,7 +102,7 @@ class SessionMirrorViews {
 	                </tr>
 	            </thead>
 	            <tbody id="session-mirror-videos-tbody"></tbody>
-            </table>';
+            </table><a href="#" id="session-mirror-media-player-link" style="display:none;" target="_blank"></a>';
 
         $this->video_pagination();
         $this->video_player_modal();
@@ -144,6 +144,20 @@ class SessionMirrorViews {
 	                    <small>' . __('If you set as Passive, we can not recording video.', SESSION_MIRROR_PLUGIN_LANG_DOMAIN).  '</small>
 	                </td>
 	                <td></td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="session_mirror_media_player_type">' . __('Media Player Type', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) . '</label></th>
+                    <td>
+                        <select name="session_mirror_media_player_type" id="session_mirror_media_player_type">
+	                        <option value="IFRAME" ' . ((isset($data['media_player_type']) && $data['media_player_type'] === 'IFRAME') ? 'selected="selected"' : '') . '>' . __('Iframe', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) .'</option>
+	                        <option value="LINK" ' . ((isset($data['media_player_type']) && $data['media_player_type'] === 'LINK') ? 'selected="selected"' : '') . '>' . __('Link', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) .'</option>
+	                    </select>
+	                    <br>
+	                    <small>' . __('Iframe: Videos\'ll play on your wordpress dashboard', SESSION_MIRROR_PLUGIN_LANG_DOMAIN).  '</small>
+	                    <br/>
+	                    <small>' . __('Link: Videos\'ll play on dashboard.sessionmirror.com', SESSION_MIRROR_PLUGIN_LANG_DOMAIN).  '</small>
+                    </td>
+                    <td></td>
                 </tr>
             </tbody>
             </table>';
