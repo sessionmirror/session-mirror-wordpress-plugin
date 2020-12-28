@@ -10,6 +10,9 @@ class SessionMirrorApi
     private $form_filters_cache_key = 'session_mirror_form_params';
     private $form_filters_cache_expire_seconds = 600;
 
+    private $basic_stats_cache_key = 'session_mirror_basic_stats';
+    private $basic_stats_cache_expire_seconds = 300;
+
     private $api_url = 'https://x.sessionmirror.com';
     private $GET = 'GET';
     private $POST = 'POST';
@@ -79,6 +82,24 @@ class SessionMirrorApi
         return $response;
     }
 
+    public function basic_stats()
+    {
+        $response = get_transient($this->basic_stats_cache_key);
+
+        if (!$response) {
+            $response = $this->request(
+                '/v1/user/basic-stats',
+                array("x" => 1),
+                $this->defaultHeaders(),
+                $this->GET
+            );
+
+            set_transient($this->basic_stats_cache_key, $response, $this->basic_stats_cache_expire_seconds);
+        }
+
+        return $response;
+    }
+
     public function set_access_token($apiKey, $secret)
     {
         $_token = $this->get_cache();
@@ -141,6 +162,12 @@ class SessionMirrorApi
             'authorization' => 'Bearer ' . $this->token,
             'content-type' => 'application/json',
         );
+    }
+
+    public function refresh_cache() {
+        delete_transient($this->token_cache_key);
+        delete_transient($this->form_filters_cache_key);
+        delete_transient($this->basic_stats_cache_key);
     }
 
 }

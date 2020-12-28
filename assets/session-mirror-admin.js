@@ -4,7 +4,7 @@
         ajaxAction: 'session_mirror',
         ajaxUrl: session_mirror_ajax.ajax_url,
         videoFilterTableSelector: 'table#session-mirror-video-filter-table',
-        loginFormContainerSelector: "div.session-mirror-lf-c",
+        loginFormContainerSelector: "#session-mirror-settings-form-f",
         videosTbodySelector: '#session-mirror-videos-tbody',
         formLoadingIconSelector: 'i.session-mirror-form-loading-icon',
         videoFilterFormSelector: 'form.session-mirror-video-filter-form-s',
@@ -26,6 +26,7 @@
         videoPlayerModalVideoCountInputSelector: 'input#session-mirror-video-player-modal-page-count',
         videoPlayerModalCurrentPageIndex: 0,
         videoPlayerMediaTypeLinkSelector: 'a#session-mirror-media-player-link',
+        remainingVideoCountSelector: '#session-mirror-remaining-video-count',
 
         countries: {
             "AF": "Afghanistan",
@@ -329,6 +330,7 @@
         if (videoFilterForm.length) {
             loadVideoFilters();
             loadVideosByProject();
+            loadRemainingVideoCount();
         }
 
         // login form - check site domain
@@ -340,6 +342,21 @@
             }
         }
     });
+
+    var loadRemainingVideoCount = function () {
+        var selector = $(SM.remainingVideoCountSelector);
+        var data = {
+            'action': SM.ajaxAction,
+            'function': 'basic_stats',
+            'data': {}
+        };
+        $.post(SM.ajaxUrl, data, function (response) {
+            var res = JSON.parse(response);
+            var stats = res.response;
+            var remaining = (stats.balance / stats.perSessionCost).toFixed(0);
+            selector.html('~' + remaining);
+        });
+    };
 
     var loadVideosByProject = function (filters) {
         var body = $(SM.videosTbodySelector);

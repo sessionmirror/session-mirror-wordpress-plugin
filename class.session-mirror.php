@@ -92,7 +92,7 @@ class SessionMirror
         }
 
         if (isset($_GET['reset-settings'])) {
-            delete_option($this->option_key);
+            $this->refresh_options();
         }
 
         echo '<div class="wrap">';
@@ -100,9 +100,15 @@ class SessionMirror
         echo '<hr class="wp-header-end"/>';
         echo '<hr/>';
 
-        if (isset($_POST['session-mirror-f-v'])) {
-            $this->save_settings();
-            $this->views->settings_saved_successfully_notice();
+        if (isset($_POST['_wpnonce_session-mirror-settings'])
+            && wp_verify_nonce( $_POST['_wpnonce_session-mirror-settings'], 'session-mirror-settings' ) ) {
+
+            $saved = $this->save_settings();
+            if ($saved) {
+                $this->views->settings_saved_successfully_notice();
+            } else {
+                $this->views->settings_could_not_be_saved_notice();
+            }
         }
 
         $form_values = array();
@@ -122,7 +128,7 @@ class SessionMirror
         $status = sanitize_text_field($_POST['session_mirror_site_status']);
         $media_player_type = sanitize_text_field($_POST['session_mirror_media_player_type']);
 
-        delete_option($this->option_key);
+        $this->refresh_options();
 
         // check token
         $is_valid_credentials = $this->api->set_access_token($api_key, $secret);
@@ -183,6 +189,7 @@ class SessionMirror
         $function = sanitize_text_field($_POST['function']);
 
         $data = isset($_POST['data']) ? $_POST['data'] : array();
+
         foreach ($data as $key => $value) {
             $data[$key] = sanitize_text_field($value);
         }
@@ -195,17 +202,35 @@ class SessionMirror
             die(json_encode(array('error' => 'Access token error')));
         }
 
+        $response = '';
+
         switch ($function) {
-            case 'projects':
-                die($this->api->projects());
             case 'video_filters':
-                die(json_encode($this->api->video_filters($project_id)));
+                $response = json_encode($this->api->video_filters($project_id));
+                break;
+
             case 'videos':
-                die(json_encode($this->api->videos($data, $project_id)));
+                if (isset($data['_wpnonce_session-mirror-video-filters'])
+                    && ! wp_verify_nonce($data['_wpnonce_session-mirror-video-filters'], 'session-mirror-video-filters')) {
+
+                    die(json_encode(array('error' => 'Invalid form data')));
+                }
+                unset($data['_wpnonce_session-mirror-video-filters']);
+                unset($data['_wp_http_referer']);
+
+                $response = json_encode($this->api->videos($data, $project_id));
+                break;
+
             case 'video_records':
-                die(json_encode($this->api->video_records($data, $options['media_player_type'])));
+                $response = json_encode($this->api->video_records($data, $options['media_player_type']));
+                break;
+
+            case 'basic_stats':
+                $response = json_encode($this->api->basic_stats());
+                break;
         }
 
+        exit($response);
     }
 
     public function load_scripts()
@@ -230,6 +255,11 @@ class SessionMirror
             echo 'sessionMirror("id", "' . $project_id . '");';
             echo '</script>';
         }
+    }
+
+    private function refresh_options() {
+        delete_option($this->option_key);
+        $this->api->refresh_cache();
     }
 
     public function plugin_activation()

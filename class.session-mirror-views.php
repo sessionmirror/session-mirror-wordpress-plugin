@@ -3,7 +3,11 @@
 class SessionMirrorViews {
 
     public function video_filters_html() {
-        echo '<form method="get" action="" onsubmit="sessionMirrorVideosFilterForm(this); return false;" class="session-mirror-video-filter-form-s"><table class="table" id="session-mirror-video-filter-table"><tbody>
+        echo '<div class="tablenav top">
+               <div class="alignleft actions">
+            <form method="get" action="" onsubmit="sessionMirrorVideosFilterForm(this); return false;" class="session-mirror-video-filter-form-s">
+            ' . wp_nonce_field('session-mirror-video-filters', '_wpnonce_session-mirror-video-filters') . '
+            <table class="table" id="session-mirror-video-filter-table"><tbody>
             <tr>
                 <td><select name="browser">
                     <option value="">' . __('Browser', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) . '</option>
@@ -41,7 +45,12 @@ class SessionMirrorViews {
                  </tr>
                  </tbody>
                </table>
-            </form>';
+               </div>
+               <div class="session-mirror-video-remaining-d">
+                ' . __('Remaining Videos', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) . ': <span id="session-mirror-remaining-video-count">...</span>
+                </div>
+                <br class="clear"/>
+            </form></div>';
     }
 
     public function video_pagination() {
@@ -109,7 +118,7 @@ class SessionMirrorViews {
     }
 
     public function settings_form($data = array()) {
-        echo '<form action="' . admin_url('admin.php?page=session-mirror-settings') . '" method="post">';
+        echo '<form action="' . admin_url('admin.php?page=session-mirror-settings') . '" method="post" id="session-mirror-settings-form-f">';
         echo wp_nonce_field('session-mirror-settings', '_wpnonce_session-mirror-settings');
         echo '<table class="form-table" role="presentation">
             <tbody>
@@ -166,7 +175,6 @@ class SessionMirrorViews {
 
         echo '<a class="button button-danger" href="' . admin_url('admin.php?page=session-mirror-settings&amp;reset-settings=true'). '">' . __('Reset', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) . '</a>';
 
-        echo '<input type="hidden" name="session-mirror-f-v" value="1"/>';
         echo '</form>';
     }
 
@@ -179,6 +187,12 @@ class SessionMirrorViews {
     public function settings_saved_successfully_notice() {
         echo '<div class="notice notice-success"> 
                     <p><strong>' . __('Settings saved successfully', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) . '</strong></p>
+              </div>';
+    }
+
+    public function settings_could_not_be_saved_notice() {
+        echo '<div class="notice notice-error"> 
+                    <p><strong>' . __('Settings could not be saved, please check your inputs', SESSION_MIRROR_PLUGIN_LANG_DOMAIN) . '</strong></p>
               </div>';
     }
 

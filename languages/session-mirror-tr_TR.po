@@ -105,3 +105,10 @@ msgstr "Iframe: Videolar wordpress yönetim panelinizde oynatılır"
 
 msgid "Link: Videos'll play on dashboard.sessionmirror.com"
 msgstr "Link: Videolar dashboard.sessionmirror.com üzerinde oynatılır"
+
+msgid "Remaining Videos"
+msgstr "Kalan Video Hakkı"
+
+msgid "Settings could not be saved, please check your inputs"
+msgstr "Ayarlar kaydedilemedi, lütfen girdiğiniz bilgileri kontrol ediniz"
+
