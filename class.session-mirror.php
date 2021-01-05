@@ -251,7 +251,7 @@ class SessionMirror
 
         if ($project_id && $is_site_active) {
             echo '<script type="text/javascript">';
-            echo '(function(s,m){var kv=function(k,v){s.sessionRecorder[k]=v};s.sessionRecorder=s.sessionRecorder||{};s.sessionMirror=s.sessionMirror||kv;var a=m.createElement("script");a.type="text/javascript";a.async=true;a.src="//client.sessionmirror.com/recorder.js";m.getElementsByTagName("head")[0].appendChild(a);})(window, document);';
+            echo '(function(s,m){var kv=function(k,v){s.sessionRecorder[k]=v};s.sessionRecorder=s.sessionRecorder||{};s.sessionMirror=s.sessionMirror||kv;var a=m.createElement("script");a.type="text/javascript";a.async=true;a.src="https://client.sessionmirror.com/recorder.js";m.getElementsByTagName("head")[0].appendChild(a);})(window, document);';
             echo 'sessionMirror("id", "' . $project_id . '");';
             echo '</script>';
         }
